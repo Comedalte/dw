@@ -1,26 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+
+import { useEffect, useState } from "react";
+import Header from "./Header";
+import Showcase from "./Showcase";
+import "./App.css";
+import { Product, ProductDto } from "../contracts/product";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const [products, setProducts] = useState<Product[]>([]);
+	console.log("build");
+	useEffect(() => {
+		const fetchData = async () => {
+			const response = await fetch("http://localhost:3333/products", { mode: "cors" });
+			const productDto: ProductDto = await response.json();
+			setProducts(productDto.products);
+		}
+		fetchData();
+	}, []);
+
+	return (
+		<div className="container">
+			<Header />
+			<section>
+				<Showcase products={products} />
+			</section>
+		</div>
+	);
 }
 
 export default App;
